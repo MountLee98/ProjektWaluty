@@ -1,0 +1,94 @@
+﻿@page "/kalkulator"
+
+<div class="container">
+    <h3 class="mb-5">Kalkulator walut</h3>
+    <div class="row mb-3">
+
+        <div class="col-3">
+            <div class="form-check">
+                <img src="flag/Flag_of_Europe.svg" style="width:50px; height:30px;" />
+                <label>Euro</label>
+            </div>
+        </div>
+
+        <div class="col-3 form-check">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">€</div>
+                </div>
+                <input type="number" @bind-value="EuroConvert" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-3">
+            <div class="form-check">
+                <img src="flag/Flag_of_Poland.svg" style="width:50px; height:30px;" />
+                <label>Poland</label>
+            </div>
+        </div>
+
+        <div class="col-3 form-check">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">zł</div>
+                </div>
+                <input type="number" @bind-value="ZlConvert" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div>
+        @x
+    </div>
+</div>
+
+
+
+@code {
+
+    string x = "";
+
+    //static string url = "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html";
+    //static HtmlAgilityPack.HtmlWeb web = new HtmlAgilityPack.HtmlWeb();
+    //static HtmlAgilityPack.HtmlDocument doc = web.Load(url);
+
+    protected override void OnInitialized()
+    {
+        HttpClient client = new HttpClient();
+        HttpResponseMessage response = client.GetAsync("https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html").Result;
+        x = response.Content.ReadAsStringAsync().Result;
+
+        //string responseBody = response.Content.ReadAsStringAsync();
+    }
+
+    double euro = 1;
+    //static string zlX = doc.DocumentNode.SelectNodes("/html/body/div[1]/div[2]/div[2]/main/div[1]/table/tbody/tr[8]/td[3]/a/span")[0].InnerText.Replace(".", ",");
+    //double zl = Convert.ToDouble(zlX);
+
+    //double euro = 1;
+    double zl = 4.45;
+
+    public double ZlConvert
+    {
+        get => zl;
+        set
+        {
+            euro = value * 4.45;
+            //euro = value / Convert.ToDouble(zlX);
+            zl = value;
+        }
+    }
+
+    public double EuroConvert
+    {
+        get => euro;
+        set
+        {
+            zl = value * 4.45;
+            //zl = value * Convert.ToDouble(zlX);
+            euro = value;
+        }
+    }
+}
